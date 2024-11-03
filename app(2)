@@ -1,0 +1,111 @@
+from flask import Flask, render_template
+import numpy as np
+import plotly.graph_objs as go
+import plotly.io as pio
+
+app = Flask(__name__)
+
+# Base parameters for 2D radial and 3D cylindrical analysis
+mu_base = 0.01
+kappa_base = 0.1
+delta_p_base = 100
+
+# Define radial velocity function for 2D radial flow (no dependency on r)
+def radial_velocity(mu, kappa, delta_p):
+    return (delta_p * kappa) / (2 * np.pi * mu)
+
+# Define axial velocity function for 3D cylindrical flow
+def axial_velocity(mu, kappa, delta_p, L):
+    return (delta_p * kappa) / (mu * L)  # Simplified for axial flow along the cylinder's length
+
+# Generate sensitivity data for 2D radial flow
+num_points = 100
+mu_values = np.linspace(0.005, 0.02, num_points)
+kappa_values = np.linspace(0.05, 0.2, num_points)
+delta_p_values = np.linspace(50, 150, num_points)
+
+velocity_mu = [radial_velocity(mu, kappa_base, delta_p_base) for mu in mu_values]
+velocity_kappa = [radial_velocity(mu_base, kappa, delta_p_base) for kappa in kappa_values]
+velocity_delta_p = [radial_velocity(mu_base, kappa_base, delta_p) for delta_p in delta_p_values]
+
+# Generate data for 3D axial flow
+L_values = np.linspace(1, 20, num_points)
+velocity_mu_3d = [axial_velocity(mu, kappa_base, delta_p_base, L_values) for mu in mu_values]
+velocity_kappa_3d = [axial_velocity(mu_base, kappa, delta_p_base, L_values) for kappa in kappa_values]
+velocity_delta_p_3d = [axial_velocity(mu_base, kappa_base, delta_p, L_values) for delta_p in delta_p_values]
+
+# Create plotly figures for each parameter sensitivity
+def create_plot(parameter_values, velocities, parameter_name, parameter_label):
+    trace = go.Scatter(x=parameter_values, y=velocities, mode='lines', name=parameter_name)
+    layout = go.Layout(
+        title=f'Sensitivity of Radial Velocity to {parameter_label}',
+        xaxis=dict(title=parameter_label),
+        yaxis=dict(title='Radial Velocity')
+    )
+    fig = go.Figure(data=[trace], layout=layout)
+    return pio.to_html(fig, full_html=False)
+
+# Create 3D surface plot for cylindrical flow
+def create_3d_plot(R, L, Z, title):
+    trace = go.Surface(z=Z, x=R, y=L, colorscale='Viridis')
+    layout = go.Layout(
+        title=title,
+        scene=dict(
+            xaxis=dict(title='Radius R'),
+            yaxis=dict(title='Length L'),
+            zaxis=dict(title='Axial Velocity')
+        )
+    )
+    fig = go.Figure(data=[trace], layout=layout)
+    return pio.to_html(fig, full_html=False)
+
+# Create contour plot for 2D visual comparison
+def create_contour_plot(R, L, Z, title):
+    trace = go.Contour(z=Z, x=R, y=L, colorscale='Viridis')
+    layout = go.Layout(
+        title=title,
+        xaxis=dict(title='Radius R'),
+        yaxis=dict(title='Length L')
+    )
+    fig = go.Figure(data=[trace], layout=layout)
+    return pio.to_html(fig, full_html=False)
+
+# Create streamline plot (2D approximation)
+def create_streamline_plot(L, Z, title):
+    trace = go.Scatter(x=L, y=Z, mode='lines', name='Streamline', line=dict(color='blue'))
+    layout = go.Layout(
+        title=title,
+        xaxis=dict(title='Length L'),
+        yaxis=dict(title='Axial Velocity')
+    )
+    fig = go.Figure(data=[trace], layout=layout)
+    return pio.to_html(fig, full_html=False)
+
+@app.route('/')
+def index():
+    # 2D Radial flow plots
+    mu_plot = create_plot(mu_values, velocity_mu, 'Viscosity (μ)', 'Viscosity (μ)')
+    kappa_plot = create_plot(kappa_values, velocity_kappa, 'Permeability (κ)', 'Permeability (κ)')
+    delta_p_plot = create_plot(delta_p_values, velocity_delta_p, 'Pressure Difference (ΔP)', 'Pressure Difference (ΔP)')
+    
+    # 3D Axial flow visualization
+    R, L = np.meshgrid(np.linspace(1, 10, num_points), np.linspace(0, 20, num_points))
+    velocity_3d = axial_velocity(mu_base, kappa_base, delta_p_base, L)
+    velocity_3d_plot = create_3d_plot(R, L, velocity_3d, '3D Axial Velocity Distribution for Cylinder')
+    
+    # Additional visuals: Contour and streamline plots
+    contour_plot = create_contour_plot(R, L, velocity_3d, 'Velocity Contour Plot')
+    streamline_plot = create_streamline_plot(L[0], velocity_3d[0], 'Streamline Plot of Axial Velocity')
+
+    return render_template(
+        'index.html',
+        mu_plot=mu_plot,
+        kappa_plot=kappa_plot,
+        delta_p_plot=delta_p_plot,
+        velocity_3d_plot=velocity_3d_plot,
+        contour_plot=contour_plot,
+        streamline_plot=streamline_plot
+    )
+
+if __name__ == '__main__':
+    app.run(debug=True)
