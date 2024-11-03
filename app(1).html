@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sensitivity Analysis of Radial Velocity</title>
+</head>
+<body>
+    <h1>Sensitivity Analysis of Radial Velocity for 2D Point Source Flow</h1>
+
+    <div>
+        <h2>Viscosity (μ) vs Radial Velocity</h2>
+        {{ mu_plot|safe }}
+    </div>
+
+    <div>
+        <h2>Permeability (κ) vs Radial Velocity</h2>
+        {{ kappa_plot|safe }}
+    </div>
+
+    <div>
+        <h2>Pressure Difference (ΔP) vs Radial Velocity</h2>
+        {{ delta_p_plot|safe }}
+    </div>
+
+</body>
+</html>
