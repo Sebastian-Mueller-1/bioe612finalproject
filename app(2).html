@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sensitivity Analysis of Radial and Axial Velocity</title>
+</head>
+<body>
+    <h1>Sensitivity Analysis for 2D Radial and 3D Axial Flow</h1>
+
+    <div>
+        <h2>2D Radial Flow Analysis</h2>
+        <div>
+            <h3>Viscosity (μ) vs Radial Velocity</h3>
+            {{ mu_plot|safe }}
+        </div>
+        <div>
+            <h3>Permeability (κ) vs Radial Velocity</h3>
+            {{ kappa_plot|safe }}
+        </div>
+        <div>
+            <h3>Pressure Difference (ΔP) vs Radial Velocity</h3>
+            {{ delta_p_plot|safe }}
+        </div>
+    </div>
+
+    <div>
+        <h2>3D Axial Flow Analysis</h2>
+        <div>
+            <h3>3D Axial Velocity Distribution for Cylinder</h3>
+            {{ velocity_3d_plot|safe }}
+        </div>
+        <div>
+            <h3>Velocity Contour Plot</h3>
+            {{ contour_plot|safe }}
+        </div>
+        <div>
+            <h3>Streamline Plot of Axial Velocity</h3>
+            {{ streamline_plot|safe }}
+        </div>
+    </div>
+
+</body>
+</html>
