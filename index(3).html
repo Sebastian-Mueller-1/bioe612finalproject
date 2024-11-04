@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sensitivity Analysis of Radial and Axial Velocity</title>
+</head>
+<body>
+    <h1>Sensitivity Analysis for 2D Radial and 3D Axial Flow</h1>
+
+    <!-- 2D Radial Flow Plots -->
+    <div>
+        <h2>2D Radial Flow Analysis</h2>
+        <div>
+            <h3>Viscosity (μ) vs Radial Velocity</h3>
+            {{ mu_plot|safe }}
+        </div>
+        <div>
+            <h3>Permeability (κ) vs Radial Velocity</h3>
+            {{ kappa_plot|safe }}
+        </div>
+        <div>
+            <h3>Pressure Difference (ΔP) vs Radial Velocity</h3>
+            {{ delta_p_plot|safe }}
+        </div>
+    </div>
+
+    <!-- 3D Axial Flow Plots -->
+    <div>
+        <h2>3D Axial Flow Analysis</h2>
+        <div>
+            <h3>3D Axial Velocity Distribution for Cylinder</h3>
+            {{ velocity_3d_plot|safe }}
+        </div>
+    </div>
+
+    <!-- Heat Maps for Pairwise Parameter Combinations -->
+    <div>
+        <h2>Heat Maps for Pairwise Parameter Combinations</h2>
+        <div>
+            <h3>Length (L) vs Viscosity (μ)</h3>
+            {{ heat_map_mu_L|safe }}
+        </div>
+        <div>
+            <h3>Length (L) vs Permeability (κ)</h3>
+            {{ heat_map_kappa_L|safe }}
+        </div>
+        <div>
+            <h3>Length (L) vs Pressure Difference (ΔP)</h3>
+            {{ heat_map_deltaP_L|safe }}
+        </div>
+        <div>
+            <h3>Viscosity (μ) vs Permeability (κ)</h3>
+            {{ heat_map_mu_kappa|safe }}
+        </div>
+        <div>
+            <h3>Viscosity (μ) vs Pressure Difference (ΔP)</h3>
+            {{ heat_map_mu_deltaP|safe }}
+        </div>
+        <div>
+            <h3>Permeability (κ) vs Pressure Difference (ΔP)</h3>
+            {{ heat_map_kappa_deltaP|safe }}
+        </div>
+    </div>
+</body>
+</html>
